@@ -32,6 +32,7 @@ gem_group :development, :test do
 end
 
 gem_group :development do
+  gem 'brakeman', require: false
   gem 'foreman'
   gem 'guard-rspec', require: false
   gem 'i18n-tasks'
