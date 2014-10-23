@@ -33,6 +33,7 @@ end
 
 gem_group :development do
   gem 'foreman'
+  gem 'guard-rspec', require: false
   gem 'i18n-tasks'
   gem 'rubocop', require: false
 end
@@ -86,6 +87,9 @@ inside 'spec' do
 
   comment_lines 'rails_helper.rb', /config.fixture_path/
 end
+
+# Install guard-rspec
+run 'bundle exec guard init rspec'
 
 # Install rubocop
 run 'bundle exec rubocop app --rails --auto-gen-config'
