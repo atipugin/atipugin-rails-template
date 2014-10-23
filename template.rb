@@ -15,6 +15,8 @@ comment_lines 'Gemfile', /(gem.*(#{unused_gems.join('|')}))/
 
 # Declare gems to install
 gem 'annotate'
+gem 'autoprefixer-rails'
+gem 'bootstrap-sass'
 gem 'jquery-rails-cdn'
 gem 'meta-tags'
 gem 'pry-rails'
@@ -230,7 +232,7 @@ inside 'config/initializers' do
             '\1 += %w(jquery.js)'
 end
 
-# Add basic slim layout
+# Manage layout stuff
 inside 'app' do
   inside 'assets' do
     inside 'javascripts' do
@@ -240,7 +242,9 @@ inside 'app' do
 
     inside 'stylesheets' do
       remove_file 'application.css'
+      copy_file '_bootstrap-variables.css.scss'
       copy_file 'application.css.scss'
+      run 'cp $(bundle show bootstrap-sass)/assets/stylesheets/_bootstrap.scss _bootstrap-custom.css.scss'
     end
   end
 
