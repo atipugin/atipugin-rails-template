@@ -244,7 +244,17 @@ inside 'app' do
       remove_file 'application.css'
       copy_file '_bootstrap-variables.css.scss'
       copy_file 'application.css.scss'
-      run 'cp $(bundle show bootstrap-sass)/assets/stylesheets/_bootstrap.scss _bootstrap-custom.css.scss'
+
+      # Create custom Bootstrap import file
+      path = run('bundle show bootstrap-sass', capture: true).chomp
+      lines = []
+      File.read(File.join(path, 'assets', 'stylesheets', '_bootstrap.scss'))
+        .each_line do |line|
+          line.prepend('// ') if line.chomp.present? && line !~ /^\/\/.*/
+          lines << line
+        end
+
+      create_file '_bootstrap-custom.css.scss', lines.join
     end
   end
 
