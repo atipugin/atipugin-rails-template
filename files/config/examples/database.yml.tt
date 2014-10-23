@@ -1,0 +1,10 @@
+development: &defaults
+  adapter: postgresql
+  database: <%= "#{app_name}_development" %>
+  encoding: utf-8
+  min_messages: warning
+  pool: 5
+
+test:
+  <<: *defaults
+  database: <%= "#{app_name}_test" %>

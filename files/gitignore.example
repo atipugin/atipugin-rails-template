@@ -1,0 +1,71 @@
+# Misc
+# ---------------------------------------
+
+**.orig
+*.log
+*.rbc
+*.swp
+*~
+
+.DS_Store
+
+# Rails app
+# ---------------------------------------
+
+db/*.sqlite3
+
+config/database.yml
+
+cache/
+doc/
+log/
+public/system/
+public/uploads/
+tmp/
+
+# SASS
+# ---------------------------------------
+
+*.sassc
+
+.sass-cache/
+
+# Bundler
+# ---------------------------------------
+
+.bundle/
+vendor/bundle/
+
+# RSpec
+# ---------------------------------------
+
+.rspec
+
+spec/tmp/
+
+# Pow
+# ---------------------------------------
+
+.powenv
+.powrc
+
+# rbenv/rvm
+# ---------------------------------------
+
+.ruby-version
+.rvmrc
+
+# Foreman
+# ---------------------------------------
+
+.foreman
+
+# Mongoid
+# ---------------------------------------
+
+config/mongoid.yml
+
+# Unicorn
+# ---------------------------------------
+
+config/unicorn.rb
