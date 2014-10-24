@@ -273,5 +273,7 @@ inside 'app' do
       remove_file 'application.html.erb'
       copy_file 'application.html.slim'
     end
+
+    directory 'shared'
   end
 end
