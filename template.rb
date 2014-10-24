@@ -7,8 +7,14 @@ def ask_with_default_yes(question)
   %w(n N no No).include?(answer) ? false : true
 end
 
+def ask_with_default_no(question)
+  answer = ask question
+  %w(y Y yes Yes).include?(answer)
+end
+
 # Ask about optional stuff
 install_devise = ask_with_default_yes('Install Devise? [Y/n]')
+install_sidekiq = ask_with_default_no('Install Sidekiq? [Y/n]')
 
 # Add proper .gitignore
 remove_file '.gitignore'
@@ -31,6 +37,7 @@ gem 'meta-tags'
 gem 'pry-rails'
 gem 'rails_config'
 gem 'russian'
+gem 'sidekiq' if install_sidekiq
 gem 'slim-rails'
 gem 'unicorn'
 
@@ -59,6 +66,14 @@ run_bundle
 # Copy config examples
 directory 'config/examples'
 directory 'config/examples', 'config'
+
+# Remove unused configs
+inside 'config' do
+  unless install_sidekiq
+    remove_file 'sidekiq.yml'
+    remove_file 'examples/sidekiq.yml'
+  end
+end
 
 # Install rspec
 generate 'rspec:install'
@@ -154,7 +169,7 @@ create_file 'Procfile'
 
 # Install unicorn
 append_to_file 'Procfile',
-               'unicorn: bundle exec unicorn -c ./config/unicorn.rb -p $PORT'
+               "unicorn: bundle exec unicorn -c ./config/unicorn.rb -p $PORT\n"
 
 # Install russian
 inside 'config' do
@@ -309,4 +324,22 @@ if install_devise
       gsub_file 'devise.rb', /(config.password_length).*/, '\1 = 6..128'
     end
   end
+end
+
+# Install sidekiq
+if install_sidekiq
+  inside 'config' do
+    append_to_file 'settings.yml' do
+      <<-EOS
+
+redis:
+  namespace: #{app_name}
+      EOS
+    end
+
+    copy_file 'initializers/sidekiq.rb'
+  end
+
+  append_to_file 'Procfile',
+                 "sidekiq: bundle exec sidekiq -C ./config/sidekiq.yml\n"
 end
