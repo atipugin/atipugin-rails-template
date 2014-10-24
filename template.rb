@@ -34,6 +34,7 @@ gem 'bootstrap-sass'
 gem 'devise' if install_devise
 gem 'jquery-rails-cdn'
 gem 'meta-tags'
+gem 'premailer-rails'
 gem 'pry-rails'
 gem 'rails_config'
 gem 'russian'
@@ -351,3 +352,8 @@ redis:
   append_to_file 'Procfile',
                  "sidekiq: bundle exec sidekiq -C ./config/sidekiq.yml\n"
 end
+
+# Install premailer-rails
+initializer 'premailer_rails.rb', <<-EOS
+Premailer::Rails.config.merge!(generate_text_part: false)
+EOS
