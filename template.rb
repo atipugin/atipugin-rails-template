@@ -323,6 +323,14 @@ if install_devise
 
       gsub_file 'devise.rb', /(config.password_length).*/, '\1 = 6..128'
     end
+
+    uncomment_lines 'i18n-tasks.yml', /ignore_unused:/
+    uncomment_lines 'i18n-tasks.yml', /- '{devise,kaminari,will_paginate}.*'/
+    insert_into_file 'i18n-tasks.yml', after: "ignore_unused:\n" do
+      <<-EOS
+- errors.*
+      EOS
+    end
   end
 end
 
