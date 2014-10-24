@@ -38,9 +38,13 @@ gem 'premailer-rails'
 gem 'pry-rails'
 gem 'rails_config'
 gem 'russian'
-gem 'sidekiq' if install_sidekiq
 gem 'slim-rails'
 gem 'unicorn'
+
+if install_sidekiq
+  gem 'sidekiq'
+  gem 'sinatra', '>= 1.3.0', require: false
+end
 
 gem_group :development, :test do
   gem 'factory_girl_rails'
@@ -347,6 +351,20 @@ redis:
     end
 
     copy_file 'initializers/sidekiq.rb'
+
+    insert_into_file 'routes.rb', before: "Rails.application.routes.draw do\n" do
+      <<-EOS
+require 'sidekiq/web'
+
+      EOS
+    end
+
+    insert_into_file 'routes.rb', after: "Rails.application.routes.draw do\n" do
+      <<-EOS
+  mount Sidekiq::Web => '/sidekiq'
+
+      EOS
+    end
   end
 
   append_to_file 'Procfile',
