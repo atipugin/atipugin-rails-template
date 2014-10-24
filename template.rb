@@ -2,6 +2,14 @@ def source_paths
   Array(super) + [File.join(File.expand_path(File.dirname(__FILE__)), 'files')]
 end
 
+def ask_with_default_yes(question)
+  answer = ask question
+  %w(n N no No).include?(answer) ? false : true
+end
+
+# Ask about optional stuff
+install_devise = ask_with_default_yes('Install Devise? [Y/n]')
+
 # Add proper .gitignore
 remove_file '.gitignore'
 copy_file 'gitignore.example', '.gitignore'
@@ -17,6 +25,7 @@ comment_lines 'Gemfile', /(gem.*(#{unused_gems.join('|')}))/
 gem 'annotate'
 gem 'autoprefixer-rails'
 gem 'bootstrap-sass'
+gem 'devise' if install_devise
 gem 'jquery-rails-cdn'
 gem 'meta-tags'
 gem 'pry-rails'
@@ -278,5 +287,26 @@ inside 'app' do
     end
 
     directory 'shared'
+  end
+end
+
+# Install devise
+if install_devise
+  generate 'devise:install'
+  inside 'config' do
+    inside 'locales' do
+      remove_file 'devise.en.yml'
+      directory 'devise'
+    end
+
+    inside 'initializers' do
+      comment_lines 'devise.rb', /config.mailer_sender/
+      uncomment_lines 'devise.rb', /(config.mailer = ).*\n/
+      gsub_file 'devise.rb',
+                /(config.mailer = ).*\n/,
+                "config.parent_mailer = 'ApplicationMailer'\n"
+
+      gsub_file 'devise.rb', /(config.password_length).*/, '\1 = 6..128'
+    end
   end
 end
