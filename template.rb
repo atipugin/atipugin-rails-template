@@ -193,6 +193,7 @@ inside 'config' do
 email:
   default_url_options:
     host: localhost:5000
+  from: #{app_name.titleize} <no-reply@localhost>
   smtp_settings:
     address: localhost
     port: 1025
@@ -211,6 +212,8 @@ email:
   gsub_file 'environments/development.rb',
             /(config.action_mailer.raise_delivery_errors).*/, '\1 = true'
 end
+
+directory 'app/mailers'
 
 # Disable annoying generators
 insert_into_file 'config/application.rb', after: "config.action_mailer.smtp_settings = Settings.email.smtp_settings.to_h\n" do
